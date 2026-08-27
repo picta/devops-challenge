@@ -1,6 +1,34 @@
-# Port Mapping Flow
-Client 127.0.0.1:80 -> Kind NodePort 30080 -> Service Port 80 -> Container Port 4000 (Node.js)
+# System Architecture
 
+```text
+                                     ┌──────────────────┐
+                                     │ CLIENT / BROWSER │
+                                     └──────────────────┘
+                                               │
+                                               ▼
+                                      http://127.0.0.1:80
+                                               │
+===============================================│===============================================
+                                               ▼  (Kind Port 80:30080)
+                  ┌────────────────────────────────────────────────────────┐
+                  │                   KUBERNETES CLUSTER(Kind)             │
+                  │                                                        │
+                  │   Kind Port 80:30080                                   │
+                  │             │                                          │
+                  │             ▼                                          │
+                  │   votes-ui Port 80:4000 (Node.js)                      │
+                  │             │                                          │
+                  │             ▼                                          │
+                  │   votes-api Service Port 5000 (Flask)                  │
+                  │             │                                          │
+                  │             ▼                                          │
+                  │   Postgres Port 5432                                   │
+                  │                                                        │
+                  └────────────────────────────────────────────────────────┘
+
+===============================================│===============================================
+
+```
 # DevOps Challenge Instructions
 
 ## Create container images (ALREADY CREATED under my docker hub)
