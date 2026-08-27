@@ -44,7 +44,7 @@ $ docker tag `<app_name>` `<user_name>`/`<app_name>`:latest <br>
 $ docker push `<username>`/`<app_name>`:latest <br>
 
 ## 2. Initialize terraform
-$ terraform init
+$ cd terraform && terraform init
 
 
 ## 3. Plan and/or apply
