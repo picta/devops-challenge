@@ -31,7 +31,7 @@
 ```
 # DevOps Challenge Instructions
 
-## Create container images (ALREADY CREATED under my docker hub)
+## 0. Create container images (ALREADY CREATED under my docker hub)
 
 $ docker login -u `<username>` <br>
 $ cd `<app_name>` && docker build . -t `<app_name>` <br>
