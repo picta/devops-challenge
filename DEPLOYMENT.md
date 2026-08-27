@@ -32,6 +32,7 @@
 # DevOps Challenge Instructions
 
 ## 0. Prerequisites
+Docker version 29.7.2 (Installed using Docker desktop using default settings.)
 Kind version 0.33.0 <br>
 Terraform version v1.16.0
 
