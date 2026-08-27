@@ -3,12 +3,12 @@ Client 127.0.0.1:80 -> Kind NodePort 30080 -> Service Port 80 -> Container Port 
 
 # DevOps Challenge Instructions
 
-## Create container images
+## Create container images (ALREADY CREATED under my docker hub)
 
-cd <app_name> && docker build . -t <app_name>
-docker login -u <username>
-docker tag <app_name> <user_name>/<app_name>:latest
-docker push <username>/<app_name>:latest
+$ cd <app_name> && docker build . -t <app_name> <br>
+$ docker login -u <username> <br>
+$ docker tag <app_name> <user_name>/<app_name>:latest <br>
+$ docker push <username>/<app_name>:latest <br>
 
 ## 1. Initialize terraform
 $ terraform init
@@ -18,7 +18,7 @@ $ terraform init
 $ terraform apply
 
 ## 3. Confirm cluster availability
-$ kind get clusters
+$ kind get clusters <br>
 $ kubectl get pods -n voting-app
 
 ## Vote !
