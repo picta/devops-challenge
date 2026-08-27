@@ -34,9 +34,9 @@
 ## Create container images (ALREADY CREATED under my docker hub)
 
 $ docker login -u `<username>` <br>
-$ cd <app_name> && docker build . -t <app_name> <br>
-$ docker tag <app_name> <user_name>/<app_name>:latest <br>
-$ docker push <username>/<app_name>:latest <br>
+$ cd `<app_name>` && docker build . -t `<app_name>` <br>
+$ docker tag `<app_name>` `<user_name>`/`<app_name>`:latest <br>
+$ docker push `<username>`/`<app_name>`:latest <br>
 
 ## 1. Initialize terraform
 $ terraform init
