@@ -31,23 +31,27 @@
 ```
 # DevOps Challenge Instructions
 
-## 0. Create container images (ALREADY CREATED under my docker hub)
+## 0. Prerequisites
+Kind version 0.33.0 <br>
+Terraform version v1.16.0
+
+## 1. Create container images (ALREADY CREATED under my docker hub, please skip to step #2)
 
 $ docker login -u `<username>` <br>
 $ cd `<app_name>` && docker build . -t `<app_name>` <br>
 $ docker tag `<app_name>` `<user_name>`/`<app_name>`:latest <br>
 $ docker push `<username>`/`<app_name>`:latest <br>
 
-## 1. Initialize terraform
+## 2. Initialize terraform
 $ terraform init
 
 
-## 2. Plan and/or apply
+## 3. Plan and/or apply
 $ terraform apply
 
-## 3. Confirm cluster availability
+## 4. Confirm cluster availability
 $ kind get clusters <br>
 $ kubectl get pods -n voting-app
 
-## Vote !
+## 5. Vote !
 http:127.0.0.1:80
