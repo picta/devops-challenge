@@ -32,9 +32,9 @@
 # DevOps Challenge Instructions
 
 ## 0. Prerequisites
-Docker version 29.7.2 (Installed using Docker desktop using default settings.) <br>
-Kind version 0.33.0 <br>
-Terraform version v1.16.0
+* Docker version 29.7.2 (Installed using Docker desktop using default settings.) <br>
+* Kind version 0.33.0 <br>
+* Terraform version v1.16.0
 
 ## 1. Create container images (ALREADY CREATED under my docker hub, please skip to step #2)
 
@@ -55,4 +55,4 @@ $ kind get clusters <br>
 $ kubectl get pods -n voting-app
 
 ## 5. Vote !
-http:127.0.0.1:80
+<http://127.0.0.1:80>
