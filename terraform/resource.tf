@@ -1,6 +1,6 @@
 # Kind Cluster
 resource "kind_cluster" "voting_cluster" {
-  name           = "voting-cluster"
+  name           = var.cluster_name
   wait_for_ready = true
 
   kind_config {
@@ -10,17 +10,17 @@ resource "kind_cluster" "voting_cluster" {
     node {
       role = "control-plane"
 
-      # Map host port 80 to votes-ui (NodePort 30080)
+      # Map host port 80 to votes-ui
       extra_port_mappings {
-        container_port = 30080
-        host_port      = 80
+        container_port = var.ui_node_port
+        host_port      = var.ui_host_port
         protocol       = "TCP"
       }
 
-      # Map host port 5001 to votes-api (NodePort 30001)
+      # Map host port 5001 to votes-api
       extra_port_mappings {
-        container_port = 30001
-        host_port      = 5001
+        container_port = var.api_node_port
+        host_port      = var.api_host_port
         protocol       = "TCP"
       }
     }
@@ -40,7 +40,7 @@ resource "kubernetes_namespace" "app_ns" {
   depends_on = [kind_cluster.voting_cluster]
 
   metadata {
-    name = "voting-app"
+    name = var.namespace
   }
 }
 
@@ -52,9 +52,9 @@ resource "kubernetes_secret" "db_secret" {
   }
 
   data = {
-    POSTGRES_USER     = "postgres"
-    POSTGRES_PASSWORD = "postgres"
-    POSTGRES_DB       = "postgres"
+    POSTGRES_USER     = var.postgres_user
+    POSTGRES_PASSWORD = var.postgres_password
+    POSTGRES_DB       = var.postgres_db
   }
 }
 
@@ -66,10 +66,10 @@ resource "kubernetes_config_map" "api_config" {
   }
 
   data = {
-    POSTGRES_HOST = "postgres"
-    PORT          = "5000"
-    OPTION_A      = "Cats"
-    OPTION_B      = "Dogs"
+    POSTGRES_HOST = var.postgres_host
+    PORT          = var.api_port
+    OPTION_A      = var.option_a
+    OPTION_B      = var.option_b
   }
 }
 
@@ -81,9 +81,9 @@ resource "kubernetes_config_map" "ui_config" {
   }
 
   data = {
-    VOTES_API_HOST = "votes-api"
-    VOTES_API_PORT = "5000"
-    PORT           = "4000"
+    VOTES_API_HOST = var.votes_api_host
+    VOTES_API_PORT = var.api_port
+    PORT           = var.ui_port
   }
 }
 
@@ -95,14 +95,14 @@ resource "kubernetes_deployment" "postgres" {
   }
 
   spec {
-    replicas = 1
+    replicas = var.postgres_replicas
     selector { match_labels = { app = "postgres" } }
     template {
       metadata { labels = { app = "postgres" } }
       spec {
         container {
           name  = "postgres"
-          image = "postgres:15-alpine"
+          image = var.postgres_image
 
           env_from {
             secret_ref {
@@ -111,14 +111,14 @@ resource "kubernetes_deployment" "postgres" {
           }
 
           port {
-            container_port = 5432
+            container_port = var.postgres_port
           }
         }
       }
     }
   }
 }
- 
+
 # PostgreSQL Service
 resource "kubernetes_service" "postgres_service" {
   metadata {
@@ -129,8 +129,8 @@ resource "kubernetes_service" "postgres_service" {
   spec {
     selector = { app = "postgres" }
     port {
-      port        = 5432
-      target_port = 5432
+      port        = var.postgres_port
+      target_port = var.postgres_port
     }
   }
 }
@@ -143,14 +143,14 @@ resource "kubernetes_deployment" "votes_api" {
   }
 
   spec {
-    replicas = 1
+    replicas = var.votes_api_replicas
     selector { match_labels = { app = "votes-api" } }
     template {
       metadata { labels = { app = "votes-api" } }
       spec {
         container {
           name  = "votes-api"
-          image = "picta/votes-api:latest"
+          image = var.votes_api_image
 
           env_from {
             config_map_ref {
@@ -164,7 +164,7 @@ resource "kubernetes_deployment" "votes_api" {
           }
 
           port {
-            container_port = 5000
+            container_port = tonumber(var.api_port)
           }
         }
       }
@@ -183,9 +183,9 @@ resource "kubernetes_service" "votes_api_service" {
     type     = "NodePort"
     selector = { app = "votes-api" }
     port {
-      port        = 5000
-      target_port = 5000
-      node_port   = 30001
+      port        = tonumber(var.api_port)
+      target_port = tonumber(var.api_port)
+      node_port   = var.api_node_port
     }
   }
 }
@@ -198,14 +198,14 @@ resource "kubernetes_deployment" "votes_ui" {
   }
 
   spec {
-    replicas = 1
+    replicas = var.votes_ui_replicas
     selector { match_labels = { app = "votes-ui" } }
     template {
       metadata { labels = { app = "votes-ui" } }
       spec {
         container {
           name  = "votes-ui"
-          image = "picta/votes-ui:latest"
+          image = var.votes_ui_image
 
           env_from {
             config_map_ref {
@@ -214,7 +214,7 @@ resource "kubernetes_deployment" "votes_ui" {
           }
 
           port {
-            container_port = 4000
+            container_port = tonumber(var.ui_port)
           }
         }
       }
@@ -233,9 +233,9 @@ resource "kubernetes_service" "votes_ui_service" {
     type     = "NodePort"
     selector = { app = "votes-ui" }
     port {
-      port        = 80
-      target_port = 4000
-      node_port   = 30080
+      port        = var.ui_service_port
+      target_port = tonumber(var.ui_port)
+      node_port   = var.ui_node_port
     }
   }
 }
